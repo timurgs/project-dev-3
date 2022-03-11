@@ -14,7 +14,7 @@ app.secret_key = os.urandom(24)
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 
-celery = Celery(app_name, broker='redis://127.0.0.1:6379/0', backend='redis://127.0.0.1:6379/1')
+celery = Celery(app_name, broker='redis://redis:6379/0', backend='redis://redis:6379/1')
 
 
 class ContextTask(celery.Task):

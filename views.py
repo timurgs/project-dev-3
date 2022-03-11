@@ -91,8 +91,7 @@ class LoginView(MethodView):
 
 
 @celery.task()
-def send_mail(login_data):
-    users_data = User.query.order_by(User.email, User.name).all()
+def send_mail(users_data, login_data):
     for item in users_data:
         message = f'Уважаемый {item[1]}!\n' \
                   f'Спасибо, что пользуетесь нашим сервисом объявлений.'.encode('utf-8')
@@ -112,8 +111,9 @@ class SendMailView(MethodView):
                         'result': task.result})
 
     def post(self):
-        data = request.json
-        task = send_mail.delay(data)
+        users = User.query.order_by(User.email, User.name).all()
+        login = request.json
+        task = send_mail.delay(users, login)
         return jsonify(
             {'taks_id': task.id}
         )

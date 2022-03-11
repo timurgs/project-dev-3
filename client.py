@@ -13,14 +13,14 @@ import requests
 # print(response)
 #
 #
-# response = requests.post('http://localhost:5000/users/',
-#                          json={
-#                              'username': 'admin',
-#                              'name': 'Adminchik',
-#                              'email': 'admin@python.py',
-#                              'password': 'sgdsSTAT4434FET32325'
-#                          }).json()
-# print(response)
+response = requests.post('http://127.0.0.1:5000/users/',
+                         json={
+                             'username': 'admin',
+                             'name': 'Adminchik',
+                             'email': 'admin@python.py',
+                             'password': 'sgdsSTAT4434FET32325'
+                         }).json()
+print(response)
 #
 #
 # response = requests.delete('http://localhost:5000/advertisements/2').json()
@@ -44,9 +44,13 @@ import requests
 # print(response)
 
 
-response = requests.post('http://localhost:5000/mail/',
-                         json={
-                             "user": "",
-                             "password": ""
-                         }).json()
-print(response)
+# response = requests.post('http://localhost:5000/mail/',
+#                          json={
+#                              "user": "",
+#                              "password": ""
+#                          }).json()
+# print(response)
+
+
+# response = requests.get('http://localhost:5000/users/1').json()
+# print(response)

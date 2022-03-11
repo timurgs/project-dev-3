@@ -1,8 +1,71 @@
-version: '3.1'
+version: '3.8'
+
+networks:
+  net1:
 
 services:
-
+  backend:
+    image: flask_python
+    build: .
+    env_file:
+      - .env
+    ports:
+      - '5000:5000'
+    depends_on:
+      - celery
+      - redis
+      - postgres
+    networks:
+      net1:
+        aliases:
+          - backend
+  celery:
+    image: flask_python
+    build: .
+    command: celery -A app.celery worker -l info -P gevent
+    depends_on:
+      - redis
+    networks:
+      net1:
+        aliases:
+          - celery
   redis:
     image: redis
     ports:
       - '6379:6379'
+    networks:
+      net1:
+        aliases:
+          - redis
+  postgres:
+    image: postgres
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      net1:
+        aliases:
+          - database
+  migration:
+    image: flask_python
+    build: .
+    command: ["sh", "migrate.sh"]
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      net1:
+        aliases:
+          - migration
+volumes:
+  pg-data:
